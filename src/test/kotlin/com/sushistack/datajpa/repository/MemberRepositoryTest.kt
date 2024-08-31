@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 
@@ -132,5 +134,42 @@ class MemberRepositoryTest {
 
         val findMember = memberRepository.findMemberByUsername(memberB.username)
         Assertions.assertThat(findMember?.username).isEqualTo(memberB.username)
+    }
+
+    @Test
+    fun testPaging() {
+        listOf(
+            Member(username = "member1", age = 10),
+            Member(username = "member2", age = 10),
+            Member(username = "member3", age = 10),
+            Member(username = "member4", age = 10),
+            Member(username = "member5", age = 10),
+            Member(username = "member6", age = 10),
+            Member(username = "member7", age = 10)
+        ).forEach { memberRepository.save(it) }
+
+        val age = 10
+        val pr = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "username"))
+
+        // count 필요 없음
+        val members = memberRepository.findByAge(age, pr)
+
+        Assertions.assertThat(members.size).isEqualTo(3)
+        Assertions.assertThat(members.totalElements).isEqualTo(7)
+        Assertions.assertThat(members.number).isEqualTo(0)
+        Assertions.assertThat(members.totalPages).isEqualTo(3)
+        Assertions.assertThat(members.isFirst).isTrue()
+        Assertions.assertThat(members.hasNext()).isTrue()
+
+        // 3 + 1개를 요청해봄 (더 보기)
+        val slicedMembers = memberRepository.findSliceByAge(age, pr)
+
+        Assertions.assertThat(slicedMembers.size).isEqualTo(3)
+        // Assertions.assertThat(slicedMembers.totalElements).isEqualTo(7)
+        Assertions.assertThat(slicedMembers.number).isEqualTo(0)
+        // Assertions.assertThat(slicedMembers.totalPages).isEqualTo(3)
+        Assertions.assertThat(slicedMembers.isFirst).isTrue()
+        Assertions.assertThat(slicedMembers.hasNext()).isTrue()
+
     }
 }

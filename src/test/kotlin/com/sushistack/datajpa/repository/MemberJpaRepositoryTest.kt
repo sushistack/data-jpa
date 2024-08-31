@@ -72,4 +72,28 @@ class MemberJpaRepositoryTest {
         val findMember = memberJpaRepository.findByUsername(memberB.username)
         Assertions.assertThat(findMember?.get(0)?.username).isEqualTo(memberB.username)
     }
+
+    @Test
+    fun testPaging() {
+        listOf(
+            Member(username = "member1", age = 10),
+            Member(username = "member2", age = 10),
+            Member(username = "member3", age = 10),
+            Member(username = "member4", age = 10),
+            Member(username = "member5", age = 10),
+            Member(username = "member6", age = 10),
+            Member(username = "member7", age = 10)
+        ).forEach { memberJpaRepository.save(it) }
+
+        val age = 10
+        val offset = 0
+        val limit = 3
+
+        val totalCount = memberJpaRepository.totalCount(age)
+        val members = memberJpaRepository.findByPage(age, offset, limit)
+
+        Assertions.assertThat(members.size).isEqualTo(3)
+        Assertions.assertThat(totalCount).isEqualTo(7)
+
+    }
 }

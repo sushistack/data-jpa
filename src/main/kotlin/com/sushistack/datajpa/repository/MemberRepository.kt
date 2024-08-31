@@ -2,6 +2,9 @@ package com.sushistack.datajpa.repository
 
 import com.sushistack.datajpa.dto.MemberDTO
 import com.sushistack.datajpa.entity.Member
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -25,5 +28,12 @@ interface MemberRepository : JpaRepository<Member, Long> {
     fun findByNames(@Param("names") names: List<String>): List<Member>
 
     fun findListByUsername(username: String): List<Member>
+
     fun findMemberByUsername(username: String): Member?
+
+    // 카운트 쿼리 분리 가능
+    @Query("SELECT m FROM Member m WHERE m.username = :username", countQuery = "SELECT COUNT(m) FROM Member m")
+    fun findByAge(age: Int, pageable: Pageable): Page<Member>
+
+    fun findSliceByAge(age: Int, pageable: Pageable): Slice<Member>
 }
