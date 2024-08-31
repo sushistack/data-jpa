@@ -2,13 +2,17 @@ package com.sushistack.datajpa.repository
 
 import com.sushistack.datajpa.dto.MemberDTO
 import com.sushistack.datajpa.entity.Member
+import jakarta.persistence.LockModeType
+import jakarta.persistence.QueryHint
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.QueryHints
 import org.springframework.data.repository.query.Param
 
 interface MemberRepository : JpaRepository<Member, Long> {
@@ -49,4 +53,10 @@ interface MemberRepository : JpaRepository<Member, Long> {
     @EntityGraph(attributePaths = ["team"])
     // @EntityGraph("Member.all") => Named
     fun findAllWithEntityGraphBy(): List<Member>
+
+    @QueryHints(QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    fun findMemberReadOnlyByUsername(username: String): List<Member>
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    fun findLockByUsername(username: String): List<Member>
 }

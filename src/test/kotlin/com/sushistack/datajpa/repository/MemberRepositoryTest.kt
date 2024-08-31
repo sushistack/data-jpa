@@ -220,4 +220,29 @@ class MemberRepositoryTest {
             println("member.team.name := ${it.team?.name}")
         }
     }
+
+    @Test
+    fun queryHint() {
+        val member = Member(username = "memberA", age = 10)
+        memberRepository.save(member)
+        entityManager.flush()
+        entityManager.clear()
+
+        // dirty check 안함
+        val findMembers = memberRepository.findMemberReadOnlyByUsername(member.username)
+        findMembers[0].username = "memberB"
+        entityManager.flush()
+
+    }
+
+    @Test
+    fun lock() {
+        val member = Member(username = "memberA", age = 10)
+        memberRepository.save(member)
+        entityManager.flush()
+        entityManager.clear()
+
+        // 이걸 쓰면 select 문 뒤에 for update 와 같은 locking 조회를 하게 된다.
+        val members = memberRepository.findLockByUsername(member.username)
+    }
 }
