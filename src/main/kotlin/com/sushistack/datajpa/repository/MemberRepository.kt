@@ -1,5 +1,6 @@
 package com.sushistack.datajpa.repository
 
+import com.sushistack.datajpa.dto.MemberDTO
 import com.sushistack.datajpa.entity.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -13,4 +14,10 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.username = :username AND m.age = :age")
     fun findUser(@Param("username") username: String, @Param("age") age: Int): List<Member>
+
+    @Query("SELECT m.username FROM Member m")
+    fun findUsernames(): List<String>
+
+    @Query("SELECT new com.sushistack.datajpa.dto.MemberDTO(m.id, m.username, t.name) FROM Member m join m.team t")
+    fun findMemberDTO(): List<MemberDTO>
 }

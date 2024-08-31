@@ -1,6 +1,7 @@
 package com.sushistack.datajpa.repository
 
 import com.sushistack.datajpa.entity.Member
+import com.sushistack.datajpa.entity.Team
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 class MemberRepositoryTest {
 
     @Autowired lateinit var memberRepository: MemberRepository
+    @Autowired lateinit var teamRepository: TeamRepository
+
 
     @Test
     @Disabled
@@ -82,5 +85,29 @@ class MemberRepositoryTest {
         val findMember = memberRepository.findUser(memberB.username, memberB.age)
         Assertions.assertThat(findMember.get(0).username).isEqualTo(memberB.username)
         Assertions.assertThat(findMember.get(0).age).isEqualTo(memberB.age)
+    }
+
+    @Test
+    fun testUsernameQuery() {
+        val memberA = Member(username = "memberA", age = 10)
+        val memberB = Member(username = "memberB", age = 20)
+        memberRepository.save(memberA)
+        memberRepository.save(memberB)
+
+        val findMembers = memberRepository.findUsernames()
+        Assertions.assertThat(findMembers.get(0)).isEqualTo(memberA.username)
+        Assertions.assertThat(findMembers.get(1)).isEqualTo(memberB.username)
+    }
+
+    @Test
+    fun findMemberDTO() {
+        val memberA = Member(username = "memberA", age = 10)
+        val team = Team(name = "teamA")
+        memberA.team = team
+        teamRepository.save(team)
+        memberRepository.save(memberA)
+
+        val memberDTO = memberRepository.findMemberDTO()
+        println(memberDTO)
     }
 }
