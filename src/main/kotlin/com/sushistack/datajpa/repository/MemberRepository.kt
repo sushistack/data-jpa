@@ -23,4 +23,7 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.username IN :names")
     fun findByNames(@Param("names") names: List<String>): List<Member>
+
+    fun findListByUsername(username: String): List<Member>
+    fun findMemberByUsername(username: String): Member?
 }

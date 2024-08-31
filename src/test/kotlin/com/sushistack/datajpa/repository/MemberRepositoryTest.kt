@@ -122,4 +122,15 @@ class MemberRepositoryTest {
         Assertions.assertThat(findMembers[0].username).isEqualTo(memberA.username)
         Assertions.assertThat(findMembers[1].username).isEqualTo(memberB.username)
     }
+
+    @Test
+    fun returnType() {
+        val memberA = Member(username = "memberA", age = 10)
+        val memberB = Member(username = "memberB", age = 20)
+        memberRepository.save(memberA)
+        memberRepository.save(memberB)
+
+        val findMember = memberRepository.findMemberByUsername(memberB.username)
+        Assertions.assertThat(findMember?.username).isEqualTo(memberB.username)
+    }
 }
