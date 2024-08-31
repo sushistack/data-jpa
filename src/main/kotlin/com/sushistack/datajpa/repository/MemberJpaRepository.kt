@@ -26,4 +26,8 @@ class MemberJpaRepository {
             .setParameter("username", username)
             .setParameter("age", age)
             .resultList as List<Member>?
+
+    fun findByUsername(username: String) = em.createNamedQuery("Member.findByUsername", Member::class.java)
+        .setParameter("username", username)
+        .resultList as List<Member>?
 }

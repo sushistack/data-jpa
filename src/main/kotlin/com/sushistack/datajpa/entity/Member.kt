@@ -3,6 +3,10 @@ package com.sushistack.datajpa.entity
 import jakarta.persistence.*
 
 @Entity
+@NamedQuery(
+    name = "Member.findByUsername",
+    query = "SELECT m FROM Member m WHERE m.username = :username",
+)
 class Member (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
