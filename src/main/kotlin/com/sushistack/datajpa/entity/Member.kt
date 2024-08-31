@@ -1,12 +1,6 @@
 package com.sushistack.datajpa.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
 
 @Entity
 class Member (
@@ -14,8 +8,17 @@ class Member (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id", nullable = false)
     val id: Long = 0,
-    val username: String,
-    @ManyToOne
+    val username: String = "",
+    val age: Int = 0,
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    val team: Team = Team(name = ""),
-)
+    var team: Team = Team(),
+) {
+
+    fun changeTeam(team: Team) {
+        this.team = team
+        team.members.add(this)
+    }
+
+    override fun toString() = "Member(id=$id, username='$username', age=$age)"
+}

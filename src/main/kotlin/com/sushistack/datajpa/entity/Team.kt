@@ -8,8 +8,9 @@ class Team (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")
     val id: Long = 0,
-    val name: String,
+    val name: String = "",
     @OneToMany(mappedBy = "team")
-    val members: List<Member> = emptyList(),
+    val members: MutableList<Member> = mutableListOf()
 ) {
+    override fun toString() = "Team(id=$id, name='$name')"
 }
