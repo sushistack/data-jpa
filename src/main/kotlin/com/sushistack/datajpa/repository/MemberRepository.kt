@@ -20,4 +20,7 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     @Query("SELECT new com.sushistack.datajpa.dto.MemberDTO(m.id, m.username, t.name) FROM Member m join m.team t")
     fun findMemberDTO(): List<MemberDTO>
+
+    @Query("SELECT m FROM Member m WHERE m.username IN :names")
+    fun findByNames(@Param("names") names: List<String>): List<Member>
 }
