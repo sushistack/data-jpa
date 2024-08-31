@@ -27,4 +27,24 @@ class MemberRepositoryTest {
         Assertions.assertThat(findMember.username).isEqualTo(member.username)
         Assertions.assertThat(findMember).isEqualTo(member)
     }
+
+    @Test
+    fun testCRUD() {
+        val memberA = Member(username = "memberA")
+        val memberB = Member(username = "memberB")
+        memberRepository.save(memberA)
+        memberRepository.save(memberB)
+        val findMemberA = memberRepository.findById(memberA.id).get()
+        val findMemberB = memberRepository.findById(memberB.id).get()
+
+        Assertions.assertThat(findMemberA).isEqualTo(memberA)
+        Assertions.assertThat(findMemberB).isEqualTo(memberB)
+
+        Assertions.assertThat(memberRepository.findAll().size).isEqualTo(2)
+        Assertions.assertThat(memberRepository.count()).isEqualTo(2)
+
+        memberRepository.delete(memberA)
+        memberRepository.delete(memberB)
+        Assertions.assertThat(memberRepository.count()).isEqualTo(0)
+    }
 }
