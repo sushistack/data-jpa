@@ -29,4 +29,24 @@ class MemberJpaRepositoryTest {
         Assertions.assertThat(findMember).isEqualTo(member)
     }
 
+    @Test
+    fun testCRUD() {
+        val memberA = Member(username = "memberA")
+        val memberB = Member(username = "memberB")
+        memberJpaRepository.save(memberA)
+        memberJpaRepository.save(memberB)
+        val findMemberA = memberJpaRepository.find(memberA.id)
+        val findMemberB = memberJpaRepository.find(memberB.id)
+
+        Assertions.assertThat(findMemberA).isEqualTo(memberA)
+        Assertions.assertThat(findMemberB).isEqualTo(memberB)
+
+        Assertions.assertThat(memberJpaRepository.findAll().size).isEqualTo(2)
+        Assertions.assertThat(memberJpaRepository.count()).isEqualTo(2)
+
+        memberJpaRepository.delete(memberA)
+        memberJpaRepository.delete(memberB)
+        Assertions.assertThat(memberJpaRepository.count()).isEqualTo(0)
+    }
+
 }

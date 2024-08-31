@@ -12,7 +12,7 @@ class Member (
     val age: Int = 0,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    var team: Team = Team(),
+    var team: Team? = null,
 ) {
 
     fun changeTeam(team: Team) {
