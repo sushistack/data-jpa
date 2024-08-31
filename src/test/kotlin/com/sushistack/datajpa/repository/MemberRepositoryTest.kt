@@ -172,4 +172,23 @@ class MemberRepositoryTest {
         Assertions.assertThat(slicedMembers.hasNext()).isTrue()
 
     }
+
+    @Test
+    fun bulkUpdate() {
+        listOf(
+            Member(username = "member1", age = 10),
+            Member(username = "member2", age = 20),
+            Member(username = "member3", age = 30),
+            Member(username = "member4", age = 40),
+            Member(username = "member5", age = 50),
+            Member(username = "member6", age = 60),
+            Member(username = "member7", age = 70)
+        ).forEach { memberRepository.save(it) }
+
+        val updatedCount = memberRepository.bulkPlusAge(30)
+//        em.flush()
+//        em.clear()
+
+        Assertions.assertThat(updatedCount).isEqualTo(5)
+    }
 }

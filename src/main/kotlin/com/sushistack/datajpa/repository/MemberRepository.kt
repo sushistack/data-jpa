@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
@@ -32,8 +33,12 @@ interface MemberRepository : JpaRepository<Member, Long> {
     fun findMemberByUsername(username: String): Member?
 
     // 카운트 쿼리 분리 가능
-    @Query("SELECT m FROM Member m WHERE m.username = :username", countQuery = "SELECT COUNT(m) FROM Member m")
+    // @Query("SELECT m FROM Member m WHERE m.username = :username", countQuery = "SELECT COUNT(m) FROM Member m")
     fun findByAge(age: Int, pageable: Pageable): Page<Member>
 
     fun findSliceByAge(age: Int, pageable: Pageable): Slice<Member>
+
+    @Modifying(clearAutomatically = true) // => executeUpdate() 를 실행 한다.
+    @Query("UPDATE Member m SET m.age = m.age + 1 WHERE m.age >= :age")
+    fun bulkPlusAge(@Param("age") age: Int): Int
 }
