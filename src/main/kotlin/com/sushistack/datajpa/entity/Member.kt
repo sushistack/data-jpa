@@ -7,6 +7,7 @@ import jakarta.persistence.*
     name = "Member.findByUsername",
     query = "SELECT m FROM Member m WHERE m.username = :username",
 )
+// @NamedEntityGraph(name = "Member.all", attributeNodes = [NamedAttributeNode("team")])
 class Member (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

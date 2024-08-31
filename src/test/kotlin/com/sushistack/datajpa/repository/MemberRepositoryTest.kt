@@ -2,6 +2,8 @@ package com.sushistack.datajpa.repository
 
 import com.sushistack.datajpa.entity.Member
 import com.sushistack.datajpa.entity.Team
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -16,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @Rollback(false)
 class MemberRepositoryTest {
+
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
 
     @Autowired lateinit var memberRepository: MemberRepository
     @Autowired lateinit var teamRepository: TeamRepository
@@ -190,5 +195,29 @@ class MemberRepositoryTest {
 //        em.clear()
 
         Assertions.assertThat(updatedCount).isEqualTo(5)
+    }
+
+    @Test
+    fun findMemberLazy() {
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamRepository.save(teamA)
+        teamRepository.save(teamB)
+        val memberA = Member(username = "memberA", age = 10, team = teamA)
+        val memberB = Member(username = "memberB", age = 20, team = teamB)
+        memberRepository.save(memberA)
+        memberRepository.save(memberB)
+
+        entityManager.flush()
+        entityManager.clear()
+
+        // N + 1 문제
+        // memberRepository.findAll()
+        // memberRepository.findMemberFetchJoin()
+        memberRepository.findAllWithEntityGraphBy().forEach {
+            println("member.username := ${it.username}")
+            println("member.team := ${it.team?.javaClass}")
+            println("member.team.name := ${it.team?.name}")
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.sushistack.datajpa.entity.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -41,4 +42,11 @@ interface MemberRepository : JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true) // => executeUpdate() 를 실행 한다.
     @Query("UPDATE Member m SET m.age = m.age + 1 WHERE m.age >= :age")
     fun bulkPlusAge(@Param("age") age: Int): Int
+
+    @Query("SELECT m FROM Member m join fetch m.team")
+    fun findMemberFetchJoin(): List<Member>
+
+    @EntityGraph(attributePaths = ["team"])
+    // @EntityGraph("Member.all") => Named
+    fun findAllWithEntityGraphBy(): List<Member>
 }
