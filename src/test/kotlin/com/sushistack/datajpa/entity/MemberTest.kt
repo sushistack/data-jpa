@@ -58,6 +58,6 @@ class MemberTest {
 
         // then
         Assertions.assertThat(findMember.createdDate).isNotNull
-        Assertions.assertThat(findMember.updatedDate).isNotNull
+        Assertions.assertThat(findMember.lastModifiedDate).isNotNull
     }
 }

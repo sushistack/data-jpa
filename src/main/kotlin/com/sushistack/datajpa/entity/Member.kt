@@ -18,7 +18,7 @@ class Member (
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     var team: Team? = null,
-) : JpaBaseEntity() {
+) : BaseEntity() {
 
     fun changeTeam(team: Team) {
         this.team = team
