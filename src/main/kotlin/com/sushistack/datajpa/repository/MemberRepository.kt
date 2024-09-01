@@ -1,6 +1,7 @@
 package com.sushistack.datajpa.repository
 
 import com.sushistack.datajpa.dto.MemberDTO
+import com.sushistack.datajpa.dto.UsernameOnlyDTO
 import com.sushistack.datajpa.entity.Member
 import jakarta.persistence.LockModeType
 import jakarta.persistence.QueryHint
@@ -59,4 +60,8 @@ interface MemberRepository : JpaRepository<Member, Long>, MemberRepositoryCustom
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findLockByUsername(username: String): List<Member>
+
+    fun findProjectionByUsername(@Param("username") username: String): List<UsernameOnly>
+
+    fun findProjectionByUsername2(@Param("username") username: String): List<UsernameOnlyDTO>
 }

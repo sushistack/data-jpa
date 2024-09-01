@@ -252,4 +252,24 @@ class MemberRepositoryTest {
             println(it)
         }
     }
+
+    @Test
+    fun usernameOnly() {
+        // Given
+        val teamA = Team(name = "teamA")
+        val teamB = Team(name = "teamB")
+        teamRepository.save(teamA)
+        teamRepository.save(teamB)
+        val memberA = Member(username = "memberA", age = 10, team = teamA)
+        val memberB = Member(username = "memberB", age = 20, team = teamB)
+        memberRepository.save(memberA)
+        memberRepository.save(memberB)
+
+        entityManager.flush()
+        entityManager.clear()
+
+        // When
+        memberRepository.findProjectionByUsername(memberB.username)
+        memberRepository.findProjectionByUsername2(memberB.username)
+    }
 }
