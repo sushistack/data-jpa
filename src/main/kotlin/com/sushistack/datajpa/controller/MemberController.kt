@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class MemberController(private val memberRepository: MemberRepository) {
-
+    /*
     @PostConstruct
     fun init() {
         (1..100).forEach {
             Member(username = "member${it}", age = it).let { m -> memberRepository.save(m) }
         }
-
-    }
+    }*/
 
     @GetMapping("/members/{id}")
     fun findMember(@PathVariable("id") id: Long) = memberRepository.findById(id).get().username
