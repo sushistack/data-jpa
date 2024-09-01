@@ -245,4 +245,11 @@ class MemberRepositoryTest {
         // 이걸 쓰면 select 문 뒤에 for update 와 같은 locking 조회를 하게 된다.
         val members = memberRepository.findLockByUsername(member.username)
     }
+
+    @Test
+    fun custom() {
+        memberRepository.findMemberCustom().forEach {
+            println(it)
+        }
+    }
 }
