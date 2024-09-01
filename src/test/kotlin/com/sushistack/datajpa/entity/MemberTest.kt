@@ -1,16 +1,23 @@
 package com.sushistack.datajpa.entity
 
+import com.sushistack.datajpa.repository.MemberRepository
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
+import java.lang.Thread.sleep
 
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
 class MemberTest {
+
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
 
     @PersistenceContext
     lateinit var entityManager: EntityManager
@@ -32,6 +39,25 @@ class MemberTest {
             println("member := $it")
             println("member.team := ${it.team}")
         }
+    }
 
+    @Test
+    fun jpaBaseTest() {
+        // given
+        val memberA = Member(username = "memberA")
+        memberRepository.save(memberA) // @PrePersist
+
+        sleep(1000)
+        memberA.username = "memberB"
+
+        entityManager.flush()
+        entityManager.clear()
+
+        // when
+        val findMember = memberRepository.findById(memberA.id).get()
+
+        // then
+        Assertions.assertThat(findMember.createdDate).isNotNull
+        Assertions.assertThat(findMember.updatedDate).isNotNull
     }
 }
